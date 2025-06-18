@@ -7,58 +7,127 @@ export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [userName, setUserName] = useState("");
+  const [role, setRole] = useState<"Patient" | "Staff">("Patient");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Integrate with NextAuth or API route
-    console.log("User registration:", userName, password);
-    router.push("/Register"); // mock redirect
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    console.log("User registration:", userName, email, role);
+    router.push("/Register");
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
-        <h1 className="text-2xl font-semibold text-blue-800 mb-6 text-center">
-          Register to Smart Health Ops
-        </h1>
+    <main className="flex min-h-screen bg-gradient-to-br from-sky-300 via-sky-200 to-sky-100">
+      <div className="flex w-full max-w-6xl mx-auto shadow-2xl rounded-3xl overflow-hidden my-10 bg-white">
+        {/* Left Section: Quote */}
+        <div className="hidden md:flex w-1/2 items-center justify-center px-10 py-12 bg-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-900 leading-tight tracking-wide font-serif text-center">
+            "Built for those who heal. <br /> Powered by those who innovate."
+          </h2>
+        </div>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="your@email.com"
-            />
+        {/* Right Section: Form */}
+        <div className="w-full md:w-1/2 flex items-center justify-center px-8 py-12 bg-white">
+          <div className="w-full max-w-md">
+            {/* Toggle */}
+            <div className="flex items-center justify-center mb-6">
+              <div className="flex bg-gray-100 rounded-full p-1 w-56">
+                <button
+                  type="button"
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    role === "Patient" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                  }`}
+                  onClick={() => setRole("Patient")}
+                >
+                  Patient
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    role === "Staff" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                  }`}
+                  onClick={() => setRole("Staff")}
+                >
+                  Staff
+                </button>
+              </div>
+            </div>
+
+            <h1 className="text-3xl font-bold text-blue-800 mb-2 text-center">Create Account</h1>
+            <p className="text-sm text-gray-500 text-center mb-6">
+              Join Smart Health Ops to manage your clinic smarter
+            </p>
+
+            <form onSubmit={handleRegister} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Username</label>
+                <input
+                  type="text"
+                  required
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Confirm Password</label>
+                <input
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter your password"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-all"
+              >
+                Register
+              </button>
+            </form>
+
+            <p className="text-sm text-gray-500 text-center mt-6">
+              Already have an account?{" "}
+              <a href="/login" className="text-blue-700 font-semibold hover:underline">
+                Login
+              </a>
+            </p>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Register
-          </button>
-        </form>
-
-        <p className="text-sm text-center text-gray-500 mt-4">
-          Don’t have an account? <a href="/register" className="text-blue-600 underline">Register</a>
-        </p>
+        </div>
       </div>
     </main>
   );

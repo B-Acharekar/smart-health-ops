@@ -8,15 +8,24 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
       {/* Navbar */}
-      <header className="w-full px-6 py-4 flex items-center justify-between border-b">
-        <h1 className="text-2xl font-bold text-blue-700">Smart Health Ops</h1>
-        <button
-          onClick={() => router.push("/login")}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-        >
-          Login
-        </button>
-      </header>
+<header className="w-full px-6 py-4 flex items-center justify-between border-b">
+  <h1 className="text-2xl font-bold text-blue-700">Smart Health Ops</h1>
+  <div className="flex gap-4">
+    <button
+      onClick={() => router.push("/register")}
+      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+    >
+      Register
+    </button>
+    <button
+      onClick={() => router.push("/login")}
+      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+    >
+      Login
+    </button>
+  </div>
+</header>
+
 
       {/* Hero Section */}
       <section className="flex flex-col items-center text-center py-24 px-6 bg-gradient-to-br from-blue-50 to-white">
