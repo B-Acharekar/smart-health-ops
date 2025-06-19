@@ -1,62 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import clock from "../assets/img/clock.png";
+import AI from "../assets/img/artificial-intelligence.png";
+import encrypted from "../assets/img/encrypted.png";
 
-// Example icons from Heroicons (you can replace with any icon library you want)
+// Icon Components
 const RealTimeIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-7 w-7 text-blue-600"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 8v4l3 3m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
+  <img src={clock.src} alt="Real-time Monitoring" />
 );
 
 const BillingIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-7 w-7 text-blue-600"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M9 17v-6a2 2 0 012-2h4a2 2 0 012 2v6M12 3v4m0 0L8 7m4 0l4-1"
-    />
-  </svg>
+  <img src={AI.src} alt="AI Assistance" />
 );
 
 const SecureIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-7 w-7 text-blue-600"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 11c1.38 0 2.5 1.12 2.5 2.5S13.38 16 12 16s-2.5-1.12-2.5-2.5S10.62 11 12 11z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 3v4m0 0L8 7m4 0l4-1"
-    />
-  </svg>
+  <img src={encrypted.src} alt="Secure & Encrypted" />
 );
 
 export default function LandingPage() {
