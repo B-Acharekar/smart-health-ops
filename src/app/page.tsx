@@ -2,21 +2,18 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import clock from "../assets/img/clock.png";
-import AI from "../assets/img/artificial-intelligence.png";
-import encrypted from "../assets/img/encrypted.png";
 
 // Icon Components
 const RealTimeIcon = () => (
-  <Image src={clock} alt="Real-time Monitoring" width={50} height={50} />
+  <Image src="/assets/img/clock.png" alt="Real-time Monitoring" width={50} height={50} />
 );
 
 const BillingIcon = () => (
-  <Image src={AI} alt="AI Assistance" width={50} height={50} />
+  <Image src="/assets/img/artificial-intelligence.png" alt="AI Assistance" width={50} height={50} />
 );
 
 const SecureIcon = () => (
-  <Image src={encrypted} alt="Secure & Encrypted" width={50} height={50} />
+  <Image src="/assets/img/encrypted.png" alt="Secure & Encrypted" width={50} height={50} />
 );
 
 export default function LandingPage() {
