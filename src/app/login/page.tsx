@@ -6,67 +6,117 @@ import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [role, setRole] = useState<"Patient" | "Staff">("Patient");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Integrate with NextAuth or API route
-    console.log("Logging in:", email, password);
-    router.push("/dashboard"); // mock redirect
+    console.log("Logging in:", { role, email, password, rememberMe });
+    router.push("/dashboard");
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
-        <h1 className="text-2xl font-semibold text-blue-800 mb-6 text-center">
-          Login to Smart Health Ops
-        </h1>
+    <main className="flex min-h-screen bg-gradient-to-br from-sky-300 via-sky-200 to-sky-100">
+      <div className="flex w-full max-w-6xl mx-auto shadow-2xl rounded-3xl overflow-hidden my-10 bg-white">
+        {/* Left Section: Quote */}
+        <div className="hidden md:flex w-1/2 items-center justify-center px-10 py-12 bg-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-900 leading-tight tracking-wide font-serif text-center">
+            "Your health is an investment,<br /> not an expense."
+          </h2>
+        </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="your@email.com"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••"
-            />
-             <div className="mt-2 text-right">
-              <Link
-                href="/reset-password"
-                className="text-sm text-blue-600 hover:underline"
-              >
-                Forgot password?
-              </Link>
+        {/* Right Section: Login Form */}
+        <div className="w-full md:w-1/2 flex items-center justify-center px-8 py-12 bg-white">
+          <div className="w-full max-w-md">
+            {/* Role Toggle */}
+            <div className="flex items-center justify-center mb-6">
+              <div className="flex bg-gray-100 rounded-full p-1 w-56">
+                <button
+                  type="button"
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    role === "Patient" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                  }`}
+                  onClick={() => setRole("Patient")}
+                >
+                  Patient
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    role === "Staff" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                  }`}
+                  onClick={() => setRole("Staff")}
+                >
+                  Staff
+                </button>
+              </div>
             </div>
+
+            <h1 className="text-3xl font-bold text-blue-800 mb-2 text-center">Welcome Back</h1>
+            <p className="text-sm text-gray-500 text-center mb-6">
+              Login to access Smart Health Ops
+            </p>
+
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                />
+                <div className="mt-2 flex justify-between items-center">
+                  <label className="inline-flex items-center text-sm text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={() => setRememberMe(!rememberMe)}
+                      className="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    Remember me
+                  </label>
+                  <Link
+                    href="/reset-password"
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-all"
+              >
+                Login
+              </button>
+            </form>
+
+            <p className="text-sm text-gray-500 text-center mt-6">
+              Don’t have an account?{" "}
+              <Link href="/register" className="text-blue-700 font-semibold hover:underline">
+                Register
+              </Link>
+            </p>
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Login
-          </button>
-        </form>
-
-        <p className="text-sm text-center text-gray-500 mt-4">
-          Don’t have an account? <a href="/register" className="text-blue-600 underline">Register</a>
-        </p>
+        </div>
       </div>
     </main>
   );
