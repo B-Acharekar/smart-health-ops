@@ -6,15 +6,35 @@ import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [role, setRole] = useState<"Patient" | "Staff">("Patient");
+  const [roleType, setRoleType] = useState<"Patient" | "Staff">("Patient");
+  const [role, setRole] = useState<"Patient" | "Doctor" | "Admin">("Patient");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Logging in:", { role, email, password, rememberMe });
-    router.push("/dashboard");
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, role }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || 'Login failed');
+      } else {
+        alert('Login successful!')
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      alert('An error occured. Please try again.');
+      console.error(error);
+    }
   };
 
   return (
@@ -35,19 +55,22 @@ export default function LoginPage() {
               <div className="flex bg-gray-100 rounded-full p-1 w-56">
                 <button
                   type="button"
-                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    role === "Patient" ? "bg-blue-600 text-white shadow" : "text-gray-600"
-                  }`}
-                  onClick={() => setRole("Patient")}
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${roleType === "Patient" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                    }`}
+                  onClick={() => {
+                    setRoleType("Patient");
+                    setRole("Patient");
+                  }}
                 >
                   Patient
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    role === "Staff" ? "bg-blue-600 text-white shadow" : "text-gray-600"
-                  }`}
-                  onClick={() => setRole("Staff")}
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${roleType === "Staff" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                    }`}
+                  onClick={() => {
+                    setRoleType("Staff");
+                  }}
                 >
                   Staff
                 </button>
@@ -101,6 +124,22 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              {roleType === "Staff" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">Select Role</label>
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as "Doctor" | "Admin")}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                    required
+                  >
+                    <option value="">Select staff role</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </div>
+              )}
+              
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-all"
