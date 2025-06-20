@@ -28,6 +28,7 @@ export default function LoginPage() {
       if (!res.ok) {
         alert(data.message || 'Login failed');
       } else {
+        localStorage.setItem("role", data.user.role);
         alert('Login successful!')
         router.push("/dashboard");
       }
@@ -139,7 +140,7 @@ export default function LoginPage() {
                   </select>
                 </div>
               )}
-              
+
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-all"
