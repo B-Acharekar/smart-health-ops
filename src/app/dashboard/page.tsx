@@ -23,11 +23,11 @@ export default function DashboardPage() {
   }, []);
 
   if (!role) {
-    return <div className="p-4">Loading dashboard...</div>;
+    return <div className="p-4 text-gray-700">Loading dashboard...</div>;
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 text-gray-800 bg-white min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
       {role === "Patient" && <DashboardPatient />}
       {(role === "Doctor" || role === "Admin") && <DashboardStaff />}

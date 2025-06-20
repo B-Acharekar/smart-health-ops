@@ -19,6 +19,13 @@
   }
 }
 
+
+.shadow-neumorphic {
+  box-shadow:
+    6px 6px 16px #bebebe,
+    -6px -6px 16px #ffffff;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
