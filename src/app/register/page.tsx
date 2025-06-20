@@ -9,7 +9,9 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const [role, setRole] = useState<"Patient" | "Staff">("Patient");
+  const [roleType, setRoleType] = useState<"Patient" | "Staff">("Patient");
+  const [role, setRole] = useState<"Patient" | "Doctor" | "Admin">("Patient");
+
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,8 +19,27 @@ export default function RegisterPage() {
       alert("Passwords do not match!");
       return;
     }
-    console.log("User registration:", userName, email, role);
-    router.push("/Register");
+    try{
+      const res = await fetch('/api/register',{
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({name: userName,email,password,role}),
+      });
+
+      const data = await res.json();
+
+      if(!res.ok){
+        alert(data.message || 'Registration failed');
+      } else{
+        alert('Registration successful! You can now Login.')
+        router.push("/login");
+      }
+    } catch(error){
+      alert('An error occured. Please try again.');
+      console.error(error);
+    }
   };
 
   return (
@@ -39,19 +60,22 @@ export default function RegisterPage() {
               <div className="flex bg-gray-100 rounded-full p-1 w-56">
                 <button
                   type="button"
-                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    role === "Patient" ? "bg-blue-600 text-white shadow" : "text-gray-600"
-                  }`}
-                  onClick={() => setRole("Patient")}
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${roleType === "Patient" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                    }`}
+                  onClick={() => {
+                    setRoleType("Patient");
+                    setRole("Patient");
+                  }}
                 >
                   Patient
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    role === "Staff" ? "bg-blue-600 text-white shadow" : "text-gray-600"
-                  }`}
-                  onClick={() => setRole("Staff")}
+                  className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${roleType === "Staff" ? "bg-blue-600 text-white shadow" : "text-gray-600"
+                    }`}
+                  onClick={() => {
+                    setRoleType("Staff");
+                  }}
                 >
                   Staff
                 </button>
@@ -111,6 +135,22 @@ export default function RegisterPage() {
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
                 />
               </div>
+
+              {roleType === "Staff" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">Select Role</label>
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as "Doctor" | "Admin")}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                    required
+                  >
+                    <option value="">Select staff role</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </div>
+              )}
 
               <button
                 type="submit"
