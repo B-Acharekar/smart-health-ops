@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { FiHome, FiCalendar, FiFolder, FiSettings, FiLogOut } from "react-icons/fi";
-import { BsCapsule } from "react-icons/bs";
+import Sidebar from "@/components/sidebar/sidebar";
 
 export default function DashboardPatient() {
-  const router = useRouter();
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [doctor] = useState({ name: "Dr. Smith" });
 
@@ -24,14 +21,6 @@ export default function DashboardPatient() {
     "Patient showing good recovery.",
     "Monitor blood sugar levels weekly.",
   ]);
-
-  const menuItems = [
-    { key: "Dashboard", icon: <FiHome /> },
-    { key: "Appointments", icon: <FiCalendar /> },
-    { key: "Prescriptions", icon: <BsCapsule /> },
-    { key: "Health Records", icon: <FiFolder /> },
-    { key: "Settings", icon: <FiSettings /> },
-  ];
 
   const [activeSection, setActiveSection] = useState("Dashboard");
 
@@ -59,15 +48,6 @@ export default function DashboardPatient() {
         console.error("Error fetching user:", err);
       });
   }, []);
-
-
-  const handleLogout = () => {
-    alert("You are logging out");
-    router.push("/");
-    localStorage.clear();
-
-    // Your logout logic here
-  };
 
   // Add new reminder
   const addReminder = () => {
@@ -98,39 +78,7 @@ export default function DashboardPatient() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-blue-300 to-blue-500 shadow-lg p-6 hidden md:block">
-        <h2 className="text-2xl font-bold text-blue-900 mb-10 select-none">Patient Panel</h2>
-        <ul className="space-y-4 text-blue-900">
-          {menuItems.map(({ key, icon }) => {
-            const isActive = activeSection === key;
-
-            return (
-              <li
-                key={key}
-                onClick={() => setActiveSection(key)}
-                className={`flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer transition-colors duration-200
-          ${isActive
-                    ? "bg-white/60 text-black font-semibold shadow-sm"
-                    : "text-blue-900 hover:bg-white/30 hover:text-black"}
-        `}
-              >
-                <span className="text-xl">{icon}</span>
-                <span className="text-sm">{key}</span>
-              </li>
-            );
-          })}
-
-          {/* Logout button */}
-          <li
-            onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer text-blue-900 hover:bg-white/30 hover:text-black transition-colors duration-200 font-semibold mt-4"
-          >
-            <FiLogOut className="text-xl" />
-            <span className="text-sm">Logout</span>
-          </li>
-
-        </ul>
-      </aside>
+      <Sidebar></Sidebar>
 
       {/* Main Content */}
       <main className="flex-1 p-6">
