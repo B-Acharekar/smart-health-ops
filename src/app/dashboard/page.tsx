@@ -27,8 +27,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-4 text-gray-800 bg-white min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+    <div className="text-gray-800 bg-white min-h-screen">
       {role === "Patient" && <DashboardPatient />}
       {(role === "Doctor" || role === "Admin") && <DashboardStaff />}
     </div>

@@ -29,6 +29,7 @@ export default function LoginPage() {
         alert(data.message || 'Login failed');
       } else {
         localStorage.setItem("role", data.user.role);
+        localStorage.setItem("token", data.token);
         alert('Login successful!')
         router.push("/dashboard");
       }

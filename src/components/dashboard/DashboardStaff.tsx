@@ -1,10 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { BsCapsule } from "react-icons/bs";
+import { FiCalendar, FiFolder, FiHome, FiLogOut, FiSettings } from "react-icons/fi";
 
 export default function DashboardStaff() {
-  const [user] = useState({ name: "Dr. Root" });
+  const router = useRouter();
+  const [user, setUser] = useState<{ name: string } | null>(null);
   const [clinic] = useState({ name: "Sunrise Medical Clinic" });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.warn("No token found.");
+      return;
+    }
+
+    fetch("/api/user/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Unauthorized");
+        }
+        return res.json();
+      })
+      .then((data) => setUser({ name: data.name }))
+      .catch((err) => {
+        console.error("Error fetching user:", err);
+      });
+  }, []);
 
   // Example data
   const nextAppointment = "2025-06-22, 10:30 AM";
@@ -29,18 +58,19 @@ export default function DashboardStaff() {
   ]);
 
   const menuItems = [
-    { key: "Dashboard", icon: "🏠" },
-    { key: "Appointments", icon: "📅" },
-    { key: "Patients", icon: "👥" },
-    { key: "Prescriptions", icon: "💊" },
-    { key: "Settings", icon: "⚙️" },
+    { key: "Dashboard", icon: <FiHome /> },
+    { key: "Appointments", icon: <FiCalendar /> },
+    { key: "Prescriptions", icon: <BsCapsule /> },
+    { key: "Health Records", icon: <FiFolder /> },
+    { key: "Settings", icon: <FiSettings /> },
   ];
 
   const [activeSection, setActiveSection] = useState("Dashboard");
 
   const handleLogout = () => {
-    alert("Logout clicked!");
-    // Your logout logic here
+    alert("You are logging out");
+    router.push("/");
+    localStorage.clear();
   };
 
   // Add new reminder
@@ -72,23 +102,25 @@ export default function DashboardStaff() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-gradient-to-b from-blue-300 to-blue-500 rounded-xl shadow-lg p-6 hidden md:block text-blue-900">
+      <aside className="w-64 bg-gradient-to-b from-blue-300 to-blue-500 shadow-lg p-6 hidden md:block text-blue-900">
         <h2 className="text-2xl font-bold mb-8 select-none">Doctor Panel</h2>
 
         <ul className="space-y-4">
           {menuItems.map(({ key, icon }) => {
             const isActive = activeSection === key;
+
             return (
               <li
                 key={key}
                 onClick={() => setActiveSection(key)}
-                className={`px-3 py-2 rounded-md cursor-pointer select-none transition-colors duration-200 ${
-                  isActive
-                    ? "bg-gray-300 text-gray-900 font-semibold"
-                    : "hover:bg-gray-200 hover:text-gray-900"
-                }`}
+                className={`flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer transition-colors duration-200
+          ${isActive
+                    ? "bg-white/60 text-black font-semibold shadow-sm"
+                    : "text-blue-900 hover:bg-white/30 hover:text-black"}
+        `}
               >
-                {icon} {key}
+                <span className="text-xl">{icon}</span>
+                <span className="text-sm">{key}</span>
               </li>
             );
           })}
@@ -96,9 +128,10 @@ export default function DashboardStaff() {
           {/* Logout button */}
           <li
             onClick={handleLogout}
-            className="px-3 py-2 rounded-md cursor-pointer select-none hover:bg-gray-200 hover:text-gray-900 font-semibold transition-colors duration-200 mt-8"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer text-blue-900 hover:bg-white/30 hover:text-black transition-colors duration-200 font-semibold mt-4"
           >
-            🔒 Logout
+            <FiLogOut className="text-xl" />
+            <span className="text-sm">Logout</span>
           </li>
         </ul>
       </aside>
@@ -108,15 +141,15 @@ export default function DashboardStaff() {
         {/* Topbar */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-blue-800 select-none">
-            Welcome, {user.name}
+            {user ? `Welcome, ${user.name}` : "Loading..."}
           </h1>
           <div className="flex items-center space-x-6">
             <p className="text-xl font-semibold text-blue-900 select-none">
               Clinic: {clinic.name}
             </p>
             <div className="rounded-full bg-blue-100 w-10 h-10 flex items-center justify-center text-blue-700 font-bold select-none">
-              {user.name
-                .split(" ")
+              {user?.name
+                ?.split(" ")
                 .map((n) => n[0])
                 .join("")
                 .toUpperCase()}
@@ -314,3 +347,4 @@ export default function DashboardStaff() {
     </div>
   );
 }
+
