@@ -31,3 +31,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* === React Calendar Custom Styling === */
+
+/* Default tile text color */
+.react-calendar__tile {
+  color: orange;
+}
+
+/* Sunday / Weekend styling */
+.react-calendar__month-view__days__day--weekend {
+  color: red !important;
+}
+
+/* Hover and active tile */
+.react-calendar__tile--active,
+.react-calendar__tile:enabled:hover {
+  background-color: #ffe0b2;
+  color: #ff8c00;
+}

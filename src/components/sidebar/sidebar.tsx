@@ -1,19 +1,24 @@
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BsCapsule } from "react-icons/bs";
 import { FiCalendar, FiFolder, FiHome, FiLogOut, FiSettings } from "react-icons/fi";
 
 export default function Sidebar() {
   const router = useRouter();
-  const [activeSection, setActiveSection] = useState("Dashboard");
+  const [activeSection, setActiveSection] = useState("");
 
   const menuItems = [
-    { key: "Dashboard", icon: <FiHome /> },
-    { key: "Appointments", icon: <FiCalendar /> },
-    { key: "Prescriptions", icon: <BsCapsule /> },
-    { key: "Health Records", icon: <FiFolder /> },
-    { key: "Settings", icon: <FiSettings /> },
+    { key: "Dashboard", icon: <FiHome />, path: "/dashboard" },
+    { key: "Appointments", icon: <FiCalendar />, path: "/appointments" },
+    { key: "Prescriptions", icon: <BsCapsule />, path: "/prescriptions" },
+    { key: "Health Records", icon: <FiFolder />, path: "/records" },
+    { key: "Settings", icon: <FiSettings />, path: "/settings" },
   ];
+
+  const handleNavigation = (key: string, path: string) => {
+    setActiveSection(key);
+    router.push(path);
+  };
 
   const handleLogout = () => {
     if (confirm("Are you sure you want to logout?")) {
@@ -22,16 +27,25 @@ export default function Sidebar() {
     }
   };
 
+  // Optional: highlight current section on reload if needed
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    const current = menuItems.find(item => item.path === currentPath);
+    if (current) {
+      setActiveSection(current.key);
+    }
+  }, []);
+
   return (
     <aside className="w-64 bg-gradient-to-b from-blue-300 to-blue-500 shadow-lg p-6 flex flex-col">
       <h2 className="text-2xl font-bold text-blue-900 mb-10 select-none">Logo here</h2>
       <ul className="space-y-4 text-blue-900 flex-1">
-        {menuItems.map(({ key, icon }) => {
+        {menuItems.map(({ key, icon, path }) => {
           const isActive = activeSection === key;
           return (
             <li
               key={key}
-              onClick={() => setActiveSection(key)}
+              onClick={() => handleNavigation(key, path)}
               className={`flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer transition-colors duration-200
                 ${isActive
                   ? "bg-white/60 text-black font-semibold shadow-sm"
