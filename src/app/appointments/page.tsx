@@ -1,4 +1,3 @@
-// app/appointments/page.tsx
 'use client';
 
 import { useState } from "react";
@@ -28,11 +27,9 @@ export default function AppointmentPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main content */}
-      <div className="flex-1 p-10">
+      <div className="flex-1 p-10 relative">
         <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-8">
           <h2 className="text-3xl font-bold mb-8 text-blue-900 text-center border-b pb-4">
             📅 Schedule Your Appointment
@@ -55,17 +52,36 @@ export default function AppointmentPage() {
             />
           )}
 
-          {selectedDate && selectedSlot && !confirmed && (
-            <AppointmentForm
-              date={selectedDate}
-              time={selectedSlot}
-              onConfirm={setConfirmed}
-              onCancel={() => setSelectedSlot(null)}
-            />
-          )}
-
           {confirmed && <ConfirmationMessage details={confirmed} />}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">📌 Upcoming Appointment</h3>
+              <p className="text-gray-600">No upcoming appointments.</p>
+            </div>
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">🕒 Recent Appointment</h3>
+              <p className="text-gray-600">Your last appointment was on 12 Jul 2025.</p>
+            </div>
+          </div>
         </div>
+
+        {/* Modal for Appointment Form */}
+        {selectedDate && selectedSlot && !confirmed && (
+          <>
+            <div className="fixed inset-0 bg-transparent backdrop-blur-sm z-40"></div>
+            <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+              <div className="bg-white w-full max-w-md rounded-xl shadow-2xl p-6 relative">
+                <AppointmentForm
+                  date={selectedDate}
+                  time={selectedSlot}
+                  onConfirm={setConfirmed}
+                  onCancel={() => setSelectedSlot(null)}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
