@@ -36,21 +36,22 @@ export default function Sidebar() {
     { key: "Prescriptions", icon: <BsCapsule />, path: "/prescriptions" },
     { key: "Health Records", icon: <FiFolder />, path: "/records" },
     { key: "Settings", icon: <FiSettings />, path: "/settings" },
+    { key: "Logout", icon: <FiLogOut />, action: "logout" }, // Added logout here
   ];
 
-  const handleNavigation = (key: string, path: string) => {
+  const handleNavigation = (key: string, path?: string, action?: string) => {
     setActiveSection(key);
-    router.push(path);
-  };
 
-  const handleLogout = () => {
-    if (confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem("token");
-      router.push("/");
+    if (action === "logout") {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem("token");
+        router.push("/");
+      }
+    } else if (path) {
+      router.push(path);
     }
   };
 
-  // Optional: highlight current section on reload if needed
   useEffect(() => {
     const currentPath = window.location.pathname;
     const current = menuItems.find(item => item.path === currentPath);
@@ -62,13 +63,13 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-gradient-to-b from-blue-300 to-blue-500 shadow-lg p-6 flex flex-col">
       <h2 className="text-2xl font-bold text-blue-900 mb-10 select-none">Logo here</h2>
-      <ul className="space-y-4 text-blue-900 flex-1">
-        {menuItems.map(({ key, icon, path }) => {
+      <ul className="space-y-4 text-blue-900">
+        {menuItems.map(({ key, icon, path, action }) => {
           const isActive = activeSection === key;
           return (
             <li
               key={key}
-              onClick={() => handleNavigation(key, path)}
+              onClick={() => handleNavigation(key, path, action)}
               className={`flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer transition-colors duration-200
                 ${isActive
                   ? "bg-white/60 text-black font-semibold shadow-sm"
@@ -81,14 +82,6 @@ export default function Sidebar() {
           );
         })}
       </ul>
-
-      <li
-        onClick={handleLogout}
-        className="flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer text-blue-900 hover:bg-white/30 hover:text-black transition-colors duration-200 font-semibold mt-4"
-      >
-        <FiLogOut className="text-xl" />
-        <span className="text-sm">Logout</span>
-      </li>
     </aside>
   );
 }
