@@ -6,10 +6,33 @@ import { FiCalendar, FiFolder, FiHome, FiLogOut, FiSettings } from "react-icons/
 export default function Sidebar() {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("");
+  const [role, setRole] = useState<"Patient" | "Doctor" | "Admin" | null>(null);
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    const formattedRole = storedRole
+      ? storedRole.charAt(0).toUpperCase() + storedRole.slice(1).toLowerCase()
+      : null;
+
+    if (
+      formattedRole === "Patient" ||
+      formattedRole === "Doctor" ||
+      formattedRole === "Admin"
+    ) {
+      setRole(formattedRole);
+    }
+  }, []);
+
+  const appointmentPath =
+    role === "Doctor"
+      ? "/appointments/doctor"
+      : role === "Patient"
+        ? "/appointments/patient"
+        : "/appointments";
 
   const menuItems = [
     { key: "Dashboard", icon: <FiHome />, path: "/dashboard" },
-    { key: "Appointments", icon: <FiCalendar />, path: "/appointments" },
+    { key: "Appointments", icon: <FiCalendar />, path: appointmentPath },
     { key: "Prescriptions", icon: <BsCapsule />, path: "/prescriptions" },
     { key: "Health Records", icon: <FiFolder />, path: "/records" },
     { key: "Settings", icon: <FiSettings />, path: "/settings" },
