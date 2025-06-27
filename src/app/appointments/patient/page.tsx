@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AppointmentForm from "@/components/appointments/AppointmentForm";
 import ConfirmationMessage from "@/components/appointments/ConfrimationMessage";
 import Sidebar from "@/components/sidebar/sidebar";
@@ -41,18 +41,56 @@ export default function AppointmentPage() {
     setAppointmentData(null);
   };
 
-  const handleConfirm = (data: any) => {
-    const newAppointment: Appointment = {
-      id: Date.now(),
+  const handleConfirm = async (data: any) => {
+    const appointmentPayload = {
+      patientName: data.name || "Guest",
+      patientEmail: data.email || "unknown@guest.com",
+      patientPhone: data.phone || "",
+      famName: data.famName || "",
+      famEmail: data.famEmail || "",
+      famPhone: data.famPhone || "",
+      reason: data.reason || "Routine checkup",
+      doctor: data.doctor || "Assigned Doctor",
       date: data.date,
       time: data.time,
-      completed: false,
       type: data.type || "Regular",
-      doctor: data.doctor || "Assigned Doctor",
     };
-    setAppointments((prev) => [...prev, newAppointment]);
-    closeForm();
+
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(appointmentPayload),
+      });
+
+      const { appointment } = await res.json();
+      setAppointments((prev) => [...prev, appointment]);
+      closeForm();
+    } catch (error) {
+      console.error("Error confirming appointment:", error);
+      alert("Something went wrong while booking.");
+    }
   };
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const res = await fetch("/api/appointments");
+        const data = await res.json();
+        // Convert date strings to Date objects
+        const formatted = data.map((a: any) => ({
+          ...a,
+          date: new Date(a.date),
+        }));
+        setAppointments(formatted);
+      } catch (error) {
+        console.error("Failed to fetch appointments:", error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
 
   const markCompleted = (id: number) => {
     setAppointments((prev) =>
@@ -73,11 +111,12 @@ export default function AppointmentPage() {
     onConfirm,
     onCancel,
   }: {
-    onConfirm: (details: { name: string; phone: string; reason: string }) => void;
+    onConfirm: (details: { name: string; phone: string; email: string; reason: string }) => void;
     onCancel: () => void;
   }) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
     const [reason, setReason] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -86,8 +125,9 @@ export default function AppointmentPage() {
         alert("Please fill all fields.");
         return;
       }
-      onConfirm({ name, phone, reason });
+      onConfirm({ name, phone, email, reason });
     };
+
 
     return (
       <>
@@ -121,6 +161,18 @@ export default function AppointmentPage() {
                     className="w-full outline-none text-gray-900"
                   />
                 </div>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="mb-1 font-medium">Email Id</label>
+                <input
+                  type="email"
+                  placeholder="Your Email Id"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border rounded px-3 py-2 text-gray-900 outline-none"
+                />
               </div>
 
               <div className="flex flex-col">
@@ -159,21 +211,39 @@ export default function AppointmentPage() {
     );
   }
 
-  const handleEmergencyConfirm = (details: { name: string; phone: string; reason: string }) => {
+  const handleEmergencyConfirm = async (details: { name: string; phone: string; email: string; reason: string }) => {
     setLoadingEmergency(true);
-    const emergencyAppointment: Appointment = {
-      id: Date.now(),
-      date: new Date(),
-      time: "ASAP",
-      completed: false,
+
+    const payload = {
+      patientName: details.name,
+      patientEmail: details.email || "unknown@guest.com", // Or fetch from session
+      patientPhone: details.phone,
+      famName: "",
+      famEmail: "",
+      famPhone: "",
+      reason: details.reason,
       doctor: "Any available doctor",
+      date: new Date().toISOString(),
+      time: "ASAP",
       type: "Emergency",
     };
-    setTimeout(() => {
-      setAppointments((prev) => [...prev, emergencyAppointment]);
-      setLoadingEmergency(false);
+
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const { appointment } = await res.json();
+      setAppointments((prev) => [...prev, appointment]);
       setShowEmergencyForm(false);
-    }, 1500);
+    } catch (error) {
+      console.error("Emergency appointment error:", error);
+      alert("Emergency appointment failed.");
+    } finally {
+      setLoadingEmergency(false);
+    }
   };
 
   return (
@@ -241,13 +311,35 @@ export default function AppointmentPage() {
           <button
             onClick={() => setShowEmergencyForm(true)}
             disabled={loadingEmergency}
-            className={`px-6 py-3 rounded-lg font-semibold text-white shadow-md transition ${
-              loadingEmergency ? "bg-red-300 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
-            }`}
+            className={`px-6 py-3 rounded-lg font-semibold text-white shadow-md transition ${loadingEmergency ? "bg-red-300 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
+              }`}
           >
             {loadingEmergency ? "Booking..." : "Book Emergency Appointment"}
           </button>
         </section>
+
+        {/* Emergency Appointments */}
+        {appointments.some((a) => a.type === "Emergency") && (
+          <section className="bg-white rounded-xl shadow-md p-6 mb-10 border border-red-300">
+            <h3 className="text-2xl font-bold mb-4 text-red-700">🚨 Emergency Appointments</h3>
+            <ul className="space-y-3">
+              {appointments
+                .filter((a) => a.type === "Emergency")
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                .map((appt) => (
+                  <li
+                    key={appt.id}
+                    className="p-4 rounded-lg bg-red-50 border border-red-400 text-red-900 shadow-sm"
+                  >
+                    <p><strong>Name:</strong> {appt.doctor || "Assigned Doctor"}</p>
+                    <p><strong>Time:</strong> {appt.time}</p>
+                    <p><strong>Status:</strong> {appt.completed ? "✅ Completed" : "⏳ Pending"}</p>
+                    <p><strong>Booked On:</strong> {new Date(appt.date).toLocaleString()}</p>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
 
         <section className="bg-white rounded-xl shadow-md p-6">
           <h3 className="text-2xl font-bold mb-6 text-blue-900">Available Dates & Time Slots</h3>

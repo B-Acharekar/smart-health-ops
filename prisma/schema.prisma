@@ -28,3 +28,23 @@ model User{
   role Role @default(PATIENT)
   createdAt DateTime @default(now())
 }
+
+model Appointment {
+  id String @id @default(uuid())
+  patientName String
+  patientEmail String
+  patientPhone String
+
+  famName String?
+  famEmail String?
+  famPhone String?
+
+  reason String
+  doctor String
+  date DateTime
+  time String
+  type String @default("Regular") //or Emergency
+  completed Boolean @default(false)
+  
+  createdAt DateTime @default(now())
+}

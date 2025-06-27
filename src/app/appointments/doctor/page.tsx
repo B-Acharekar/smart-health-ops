@@ -10,7 +10,7 @@ type Appointment = {
   completed: boolean;
   patientName: string;
   type: "Regular" | "Emergency";
-  notes?: string;
+  reason?: string;
   medications?: string[];
   diseases?: string[];
   pastReports?: string[];
@@ -23,102 +23,126 @@ export default function DoctorAppointments() {
   const [modalData, setModalData] = useState<Appointment | null>(null);
 
   useEffect(() => {
-    setAppointments([
-      {
-        id: 2,
-        date: "ASAP",
-        time: "ASAP",
-        completed: false,
-        patientName: "Bhushan Acharekar",
-        type: "Emergency",
-        notes: "Severe chest pain reported",
-        medications: ["Aspirin", "Nitroglycerin"],
-        diseases: ["Hypertension"],
-        pastReports: ["ECG_Report_2024.pdf", "Blood_Test_2023.pdf"],
-      },
-      {
-        id: 1,
-        date: "2025-07-24",
-        time: "10:00 AM",
-        completed: false,
-        patientName: "John Doe",
-        type: "Regular",
-        notes: "Routine check-up",
-        medications: ["Metformin"],
-        diseases: ["Diabetes"],
-        pastReports: ["HbA1c_Report_2024.pdf"],
-      },
-      {
-        id: 3,
-        date: "2025-07-25",
-        time: "02:30 PM",
-        completed: true,
-        patientName: "Alice Smith",
-        type: "Regular",
-      },
-      {
-        id: 4,
-        date: "2025-07-26",
-        time: "09:00 AM",
-        completed: false,
-        patientName: "Michael Brown",
-        type: "Regular",
-      },
-      {
-        id: 5,
-        date: "2025-07-27",
-        time: "11:15 AM",
-        completed: false,
-        patientName: "Emily Clark",
-        type: "Regular",
-      },
-      {
-        id: 6,
-        date: "2025-07-28",
-        time: "01:00 PM",
-        completed: false,
-        patientName: "David Wilson",
-        type: "Regular",
-      },
-      {
-        id: 7,
-        date: "2025-07-29",
-        time: "03:45 PM",
-        completed: false,
-        patientName: "Sophia Lee",
-        type: "Regular",
-      },
-      {
-        id: 8,
-        date: "2025-07-30",
-        time: "10:30 AM",
-        completed: false,
-        patientName: "James Taylor",
-        type: "Regular",
-      },
-      {
-        id: 9,
-        date: "2025-07-31",
-        time: "02:00 PM",
-        completed: false,
-        patientName: "Olivia Martinez",
-        type: "Regular",
-      },
-      {
-        id: 10,
-        date: "2025-08-01",
-        time: "09:45 AM",
-        completed: false,
-        patientName: "Daniel Anderson",
-        type: "Regular",
-      },
-    ]);
-  }, []);
+    const fetchAppointments = async () => {
+      try {
+        const res = await fetch("/api/appointments")
+        const data = await res.json();
+        setAppointments(data);
+      } catch (error) {
+        console.error("Error fetching appointments", error);
+      }
+    };
+    fetchAppointments();
+  }, [])
+  // useEffect(() => {
+  //   setAppointments([
+  //     {
+  //       id: 2,
+  //       date: "ASAP",
+  //       time: "ASAP",
+  //       completed: false,
+  //       patientName: "Bhushan Acharekar",
+  //       type: "Emergency",
+  //       reason: "Severe chest pain reported",
+  //       medications: ["Aspirin", "Nitroglycerin"],
+  //       diseases: ["Hypertension"],
+  //       pastReports: ["ECG_Report_2024.pdf", "Blood_Test_2023.pdf"],
+  //     },
+  //     {
+  //       id: 1,
+  //       date: "2025-07-24",
+  //       time: "10:00 AM",
+  //       completed: false,
+  //       patientName: "John Doe",
+  //       type: "Regular",
+  //       reason: "Routine check-up",
+  //       medications: ["Metformin"],
+  //       diseases: ["Diabetes"],
+  //       pastReports: ["HbA1c_Report_2024.pdf"],
+  //     },
+  //     {
+  //       id: 3,
+  //       date: "2025-07-25",
+  //       time: "02:30 PM",
+  //       completed: true,
+  //       patientName: "Alice Smith",
+  //       type: "Regular",
+  //     },
+  //     {
+  //       id: 4,
+  //       date: "2025-07-26",
+  //       time: "09:00 AM",
+  //       completed: false,
+  //       patientName: "Michael Brown",
+  //       type: "Regular",
+  //     },
+  //     {
+  //       id: 5,
+  //       date: "2025-07-27",
+  //       time: "11:15 AM",
+  //       completed: false,
+  //       patientName: "Emily Clark",
+  //       type: "Regular",
+  //     },
+  //     {
+  //       id: 6,
+  //       date: "2025-07-28",
+  //       time: "01:00 PM",
+  //       completed: false,
+  //       patientName: "David Wilson",
+  //       type: "Regular",
+  //     },
+  //     {
+  //       id: 7,
+  //       date: "2025-07-29",
+  //       time: "03:45 PM",
+  //       completed: false,
+  //       patientName: "Sophia Lee",
+  //       type: "Regular",
+  //     },
+  //     {
+  //       id: 8,
+  //       date: "2025-07-30",
+  //       time: "10:30 AM",
+  //       completed: false,
+  //       patientName: "James Taylor",
+  //       type: "Regular",
+  //     },
+  //     {
+  //       id: 9,
+  //       date: "2025-07-31",
+  //       time: "02:00 PM",
+  //       completed: false,
+  //       patientName: "Olivia Martinez",
+  //       type: "Regular",
+  //     },
+  //     {
+  //       id: 10,
+  //       date: "2025-08-01",
+  //       time: "09:45 AM",
+  //       completed: false,
+  //       patientName: "Daniel Anderson",
+  //       type: "Regular",
+  //     },
+  //   ]);
+  // }, []);
 
-  const markCompleted = (id: number) => {
-    setAppointments((prev) =>
-      prev.map((appt) => (appt.id === id ? { ...appt, completed: true } : appt))
-    );
+  const markCompleted = async (id: number | string) => {
+    try {
+      const res = await fetch(`/api/appointments/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: true }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update")
+      const updated = await res.json();
+      setAppointments((prev) =>
+        prev.map((appt) => (appt.id === id ? updated : appt))
+      );
+    } catch (error) {
+      console.error("Error updating appointmnet", error);
+    };
   };
 
   const openModal = (appt: Appointment) => {
@@ -158,9 +182,8 @@ export default function DoctorAppointments() {
           <button
             id="availability-toggle"
             onClick={() => setDoctorAvailable((prev) => !prev)}
-            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
-              doctorAvailable ? "bg-green-600 text-white" : "bg-red-500 text-white"
-            }`}
+            className={`px-4 py-2 rounded-full font-semibold transition-colors ${doctorAvailable ? "bg-green-600 text-white" : "bg-red-500 text-white"
+              }`}
           >
             {doctorAvailable ? "Available" : "Not Available"}
           </button>
@@ -187,18 +210,17 @@ export default function DoctorAppointments() {
                 >
                   <div>
                     <p className="font-semibold text-xl text-red-800">{appt.patientName}</p>
-                    <p className="text-sm text-red-600 mt-1 italic">{appt.notes}</p>
+                    <p className="text-sm text-red-600 mt-1 italic">{appt.reason}</p>
                   </div>
 
                   <div className="flex gap-3 items-center">
                     <button
                       disabled={!doctorAvailable}
                       onClick={() => openModal(appt)}
-                      className={`px-4 py-2 rounded font-semibold transition ${
-                        doctorAvailable
-                          ? "bg-red-600 text-white hover:bg-red-700"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      }`}
+                      className={`px-4 py-2 rounded font-semibold transition ${doctorAvailable
+                        ? "bg-red-600 text-white hover:bg-red-700"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
                     >
                       Appoint
                     </button>
@@ -232,9 +254,8 @@ export default function DoctorAppointments() {
                   {regularAppointments.map((appt) => (
                     <tr
                       key={appt.id}
-                      className={`border-t ${
-                        appt.completed ? "bg-green-50 text-green-800" : "hover:bg-gray-50"
-                      }`}
+                      className={`border-t ${appt.completed ? "bg-green-50 text-green-800" : "hover:bg-gray-50"
+                        }`}
                     >
                       <td className="py-3 px-6">{new Date(appt.date).toLocaleDateString()}</td>
                       <td className="py-3 px-6">{appt.time}</td>
@@ -253,12 +274,16 @@ export default function DoctorAppointments() {
                           </button>
                         )}
                         <button
-                          onClick={() => notifyStaff(appt.patientName)}
+                          onClick={() => {
+                            openModal(appt);
+                            notifyStaff(appt.patientName);
+                          }}
                           className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition"
-                          title="Request Details - Notify Staff"
+                          title="Request Details - View Summary"
                         >
                           Request Details
                         </button>
+
                       </td>
                     </tr>
                   ))}
@@ -302,9 +327,9 @@ export default function DoctorAppointments() {
                 <p>
                   <span className="font-semibold">Time:</span> {modalData.time}
                 </p>
-                {modalData.notes && (
+                {modalData.reason && (
                   <p>
-                    <span className="font-semibold">Symptoms / Notes:</span> {modalData.notes}
+                    <span className="font-semibold">Symptoms / reason:</span> {modalData.reason}
                   </p>
                 )}
                 {modalData.medications && modalData.medications.length > 0 && (
@@ -343,6 +368,19 @@ export default function DoctorAppointments() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+                {!modalData.completed && (
+                  <div className="mt-6 text-right">
+                    <button
+                      onClick={() => {
+                        markCompleted(modalData.id);
+                        closeModal();
+                      }}
+                      className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 transition font-semibold"
+                    >
+                      Mark as Completed
+                    </button>
                   </div>
                 )}
               </div>
