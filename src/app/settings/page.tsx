@@ -1,4 +1,5 @@
 "use client";
+import Sidebar from "@/components/sidebar/sidebar";
 import { useState, useEffect } from "react";
 import {
   FiUser,
@@ -101,7 +102,9 @@ export default function SettingsPage() {
   };
 
   return (
-    <main className="min-h-screen w-full bg-white text-gray-900 p-12">
+    <div className="flex min-h-screen bg-gray-100">
+    <Sidebar/>
+    <main className="flex-1 bg-white text-gray-900 p-6">
       <div className="max-w-6xl mx-auto space-y-14">
         <section className="bg-white rounded-xl shadow-md p-8 flex items-center gap-8">
           <div className="w-28 h-28 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
@@ -326,5 +329,6 @@ export default function SettingsPage() {
         </section>
       </div>
     </main>
+    </div>
   );
 }
