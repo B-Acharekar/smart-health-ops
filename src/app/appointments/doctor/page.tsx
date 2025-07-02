@@ -172,7 +172,7 @@ export default function DoctorAppointments() {
     <div className="flex min-h-screen bg-gray-50 text-gray-900">
       <Sidebar />
 
-      <main className="flex-1 p-8 max-w-6xl mx-auto">
+      <main className="ml-64 overflow-y-auto flex-1 p-8 max-w-6xl mx-auto">
         <h1 className="text-4xl font-extrabold mb-6 text-blue-900">Appointments</h1>
 
         <div className="mb-8 flex items-center gap-4">

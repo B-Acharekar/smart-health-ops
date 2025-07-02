@@ -61,7 +61,7 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-blue-300 to-blue-500 shadow-lg p-6 flex flex-col">
+    <aside className="w-64 h-screen bg-gradient-to-b from-blue-300 to-blue-500 shadow-lg p-6 fixed top-0 left-0 flex flex-col z-10">
       <h2 className="text-2xl font-bold text-blue-900 mb-10 select-none">Logo here</h2>
       <ul className="space-y-4 text-blue-900">
         {menuItems.map(({ key, icon, path, action }) => {

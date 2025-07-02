@@ -87,7 +87,7 @@ export default function DashboardStaff() {
       <Sidebar/>
 
       {/* Main Content */}
-      <main className="flex-1 p-6">
+      <main className="ml-64 flex-1 p-6 overflow-y-auto">
         {/* Topbar */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-blue-800 select-none">
