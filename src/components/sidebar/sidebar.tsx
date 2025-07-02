@@ -1,3 +1,4 @@
+'use client';
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { BsCapsule } from "react-icons/bs";
@@ -30,10 +31,17 @@ export default function Sidebar() {
         ? "/appointments/patient"
         : "/appointments";
 
+  const prescriptionPath =
+    role === "Doctor"
+      ? "/prescription/doctor"
+      : role === "Patient"
+        ? "/prescription/patient"
+        : "/prescription";
+
   const menuItems = [
     { key: "Dashboard", icon: <FiHome />, path: "/dashboard" },
     { key: "Appointments", icon: <FiCalendar />, path: appointmentPath },
-    { key: "Prescriptions", icon: <BsCapsule />, path: "/prescriptions" },
+    { key: "Prescriptions", icon: <BsCapsule />, path: prescriptionPath },
     { key: "Health Records", icon: <FiFolder />, path: "/records" },
     { key: "Settings", icon: <FiSettings />, path: "/settings" },
     { key: "Logout", icon: <FiLogOut />, action: "logout" }, // Added logout here
