@@ -1,18 +1,12 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+// src/app/api/appointments/[id]/route.ts
+export const dynamic = "force-dynamic";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    const { completed } = await req.json();
+import { updateAppointment } from "@/server/controllers/appointment.controller";
+import { NextRequest } from "next/server";
 
-    const updated = await prisma.appointment.update({
-      where: { id: params.id },
-      data: { completed },
-    });
-
-    return NextResponse.json(updated);
-  } catch (error) {
-    console.error("[PATCH_APPOINTMENT]", error);
-    return NextResponse.json({ error: "Update failed" }, { status: 500 });
-  }
+export async function PATCH(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  return updateAppointment(req, context.params);
 }

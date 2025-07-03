@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAppointment, getAllAppointments } from '@/server/services/appointment.service'
 import { appointmentSchema } from '@/server/validators/appointment.schema'
+import * as appointmentService from "@/server/services/appointment.service";
 
 export async function handlePOST(req: NextRequest) {
   try {
@@ -31,5 +32,20 @@ export async function handleGET() {
   } catch (error) {
     console.error("[APPOINTMENT_FETCH_ERROR]", error)
     return NextResponse.json({ error: "Failed to fetch appointments." }, { status: 500 })
+  }
+}
+
+export async function updateAppointment(
+  req: NextRequest,
+  params: { id: string }
+) {
+  try {
+    const {completed} = await req.json();
+    
+    const updated = await appointmentService.updateAppointment(params.id,completed)
+    return NextResponse.json(updated);
+  } catch(error){
+    console.error("[CONTROLLER] updateAppointment error",error);
+    return NextResponse.json({error: "Failed to update"},{status: 500})
   }
 }

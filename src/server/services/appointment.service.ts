@@ -9,3 +9,10 @@ export const getAllAppointments = async() => {
         orderBy: {date:'asc'}
     })
 }
+
+export async function updateAppointment(id: string, completed: boolean) {
+  return prisma.appointment.update({
+    where: { id },
+    data: { completed },
+  });
+}
