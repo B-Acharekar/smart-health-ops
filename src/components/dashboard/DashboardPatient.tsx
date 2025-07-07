@@ -25,17 +25,9 @@ export default function DashboardPatient() {
   const [activeSection, setActiveSection] = useState("Dashboard");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      console.warn("No token found.");
-      return;
-    }
-
     fetch("/api/user/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      method: "GET",
+      credentials:"include",
     })
       .then((res) => {
         if (!res.ok) {

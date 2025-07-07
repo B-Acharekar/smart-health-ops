@@ -47,19 +47,22 @@ export default function Sidebar() {
     { key: "Logout", icon: <FiLogOut />, action: "logout" }, // Added logout here
   ];
 
-  const handleNavigation = (key: string, path?: string, action?: string) => {
+  const handleNavigation = async (key: string, path?: string, action?: string) => {
     setActiveSection(key);
 
     if (action === "logout") {
       if (confirm("Are you sure you want to logout?")) {
-        localStorage.removeItem("token");
+        await fetch("/api/auth/logout", {
+          method: "POST",
+        });
+
+        // ✅ Redirect to home or login
         router.push("/");
       }
     } else if (path) {
       router.push(path);
     }
   };
-
   useEffect(() => {
     const currentPath = window.location.pathname;
     const current = menuItems.find(item => item.path === currentPath);

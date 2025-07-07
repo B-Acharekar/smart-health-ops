@@ -1,23 +1,11 @@
+import { withAuth } from "@/server/middlewares/auth.middlewares";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
-export async function GET(req: Request) {
+export const GET = withAuth(async (req, user) => {
   try {
-    const authHeader = req.headers.get("authorization");
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
-
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.id },
+    const foundUser = await prisma.user.findUnique({
+      where: { id: user.id },
       select: {
         id: true,
         name: true,
@@ -27,13 +15,13 @@ export async function GET(req: Request) {
       },
     });
 
-    if (!user) {
+    if (!foundUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    return NextResponse.json(foundUser);
   } catch (err) {
     console.error("[ME ERROR]", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
-}
+});

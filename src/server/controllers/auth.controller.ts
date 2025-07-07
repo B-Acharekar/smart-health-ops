@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { loginSchema } from "@/server/validators/login.schema";
-import { loginUserService } from "@/server/services/login.service";
+import { loginUserService } from "@/server/services/auth.service";
 
 export async function loginController(req: Request) {
   try {
@@ -20,11 +20,20 @@ export async function loginController(req: Request) {
 
     const result = await loginUserService(parsed.data);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
-      token: result.token,
       user: result.user,
     });
+
+    response.cookies.set("token", result.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 2, // 2 hours
+    });
+
+    return response;
   } catch (err: any) {
     console.error("[LOGIN_CONTROLLER_ERROR]", err);
     return NextResponse.json(
@@ -32,4 +41,19 @@ export async function loginController(req: Request) {
       { status: 500 }
     );
   }
+}
+
+export async function logoutController() {
+  const response = NextResponse.json({
+    success: true,
+    message: "Logged out successfully",
+  });
+
+  response.cookies.set("token", "", {
+    httpOnly: true,
+    path: "/",
+    expires: new Date(0), // Expire immediately
+  });
+
+  return response;
 }

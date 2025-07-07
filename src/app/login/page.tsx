@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [role, setRole] = useState<"Patient" | "Doctor" | "Admin">("Patient");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [show, setShow] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -99,14 +101,26 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
-                />
+
+                <div className="relative">
+                  <input
+                    type={show ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-black"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShow(!show)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+                  >
+                    {show ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+
                 <div className="mt-2 flex justify-between items-center">
                   <label className="inline-flex items-center text-sm text-gray-700">
                     <input
@@ -117,6 +131,7 @@ export default function LoginPage() {
                     />
                     Remember me
                   </label>
+
                   <Link
                     href="/reset-password"
                     className="text-sm text-blue-600 hover:underline"
